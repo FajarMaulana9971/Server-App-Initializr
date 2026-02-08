@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Table
 @Entity
@@ -19,8 +22,8 @@ public class GeneratedProject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_name", unique = true, nullable = false)
-    private String projectName;
+    @Column(name = "application_name", nullable = false)
+    private String applicationName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "framework_type", nullable = false)
@@ -59,4 +62,8 @@ public class GeneratedProject {
 
     @Column(name = "version")
     private String version;
+
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }
