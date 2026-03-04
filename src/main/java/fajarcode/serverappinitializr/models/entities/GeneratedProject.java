@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table
+@Table(name = "generated_projects")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class GeneratedProject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "application_name", nullable = false)
+    @Column(name = "application_name", nullable = false, unique = true)
     private String applicationName;
 
     @Enumerated(EnumType.STRING)
