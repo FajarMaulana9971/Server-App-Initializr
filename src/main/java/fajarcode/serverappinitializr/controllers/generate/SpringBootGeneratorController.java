@@ -34,7 +34,7 @@ public class SpringBootGeneratorController {
 //    }
 
     @GetMapping("/download")
-    public void download(@RequestBody String applicationName, HttpServletResponse response) throws IOException {
+    public void download(@RequestParam String applicationName, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
         response.setHeader(
