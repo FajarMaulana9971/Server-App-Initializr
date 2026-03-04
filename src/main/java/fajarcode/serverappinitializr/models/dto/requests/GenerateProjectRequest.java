@@ -23,11 +23,14 @@ public class GenerateProjectRequest {
     @NotNull(message = "Database type is required")
     private DatabaseType databaseType;
 
-    private Boolean jwtAuthEnabled;
+    @NotNull(message = "JWT auth enabled is required")
+    private Boolean jwtAuthEnabled = false;
 
-    private Boolean baseEntityEnabled;
+    @NotNull(message = "Base entity enabled is required")
+    private Boolean baseEntityEnabled = false;
 
-    private Boolean baseResponseEnabled;
+    @NotNull(message = "Base response enabled is required")
+    private Boolean baseResponseEnabled = false;
 
     private String packageName;
 
