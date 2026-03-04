@@ -9,6 +9,8 @@ import fajarcode.serverappinitializr.models.dto.responses.base.BaseResponse;
 import fajarcode.serverappinitializr.models.entities.GeneratedProject;
 import fajarcode.serverappinitializr.models.enums.DatabaseType;
 import fajarcode.serverappinitializr.models.enums.FrameworkType;
+import fajarcode.serverappinitializr.models.enums.PomDependency;
+import fajarcode.serverappinitializr.models.enums.PomSection;
 import fajarcode.serverappinitializr.repositories.GeneratedProjectRepository;
 import fajarcode.serverappinitializr.services.interfaces.SpringBootGeneratorService;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +41,8 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
     private static final String IMPORT_NO_ARGUMENTS_CONSTRUCTOR = "import lombok.NoArgsConstructor;\n\n";
     private static final String IMPORT_ALL_ARGUMENTS_CONSTRUCTOR = "import lombok.AllArgsConstructor;\n";
     private static final String IMPORT = "import ";
-    private static final String DEPENDENCY = "        </dependency>\n";
-    private static final String OPEN_DEPENDENCY_SECTION = "        <dependency>\n";
-    private static final String CLOSED_DEPENDENCY_SECTION = "        </dependency>\n\n";
     private static final String IMPORT_LOMBOK_DATA = "import lombok.Data;\n";
     private static final String BUILDER_DEFAULT = "    @Builder.Default\n";
-    private static final String GROUP_ID_DEPENDENCY = "            <groupId>org.springframework.boot</groupId>\n";
-    private static final String GROUP_ID_JSON_WEB_TOKEN = "            <groupId>io.jsonwebtoken</groupId>\n";
-    private static final String JWT_VERSION = "            <version>0.11.5</version>\n";
     private static final String DATA_ANNOTATION = "@Data\n";
     private static final String PACKAGE = "package ";
     private static final String DELIMITER_PATH = "/";
@@ -112,43 +108,6 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
 
         return BaseResponse.success("Project Successfully Generated", mapEntityToResponse(savedGeneratedProject));
     }
-
-//    @Override
-//    public byte[] getProjectZip(String applicationName) throws IOException {
-//
-//        GeneratedProject project = generatedProjectRepository.getProjectByApplicationName(applicationName).orElseThrow(() -> new NotFoundException("Project Is Not Found"));
-//
-//        String projectName = Paths.get(project.getProjectPath())
-//                .getFileName()
-//                .toString();
-//
-//        int updated = generatedProjectRepository.incrementDownloadCount(projectName);
-//
-//        if (updated > 0) {
-//            log.info("Download count incremented for project '{}'", projectName);
-//        }
-//
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try (ZipOutputStream zos = new ZipOutputStream(byteArrayOutputStream)) {
-//            Path sourcePath = Paths.get(project.getProjectPath());
-//
-//            try (var stream = Files.walk(sourcePath)) {
-//                stream.filter(Files::isRegularFile)
-//                        .forEach(path -> {
-//                            try {
-//                                String entryName = sourcePath.relativize(path).toString();
-//                                zos.putNextEntry(new ZipEntry(entryName));
-//                                Files.copy(path, zos);
-//                                zos.closeEntry();
-//                            } catch (IOException e) {
-//                                throw new InternalServerErrorException(e.getMessage());
-//                            }
-//                        });
-//            }
-//        }
-//
-//        return byteArrayOutputStream.toByteArray();
-//    }
 
     @Override
     @Transactional
@@ -257,156 +216,49 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         String javaVersion = request.getJavaVersion() != null ? request.getJavaVersion() : "17";
 
         StringBuilder pom = new StringBuilder();
-        pom.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        pom.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n");
-        pom.append("         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-        pom.append("         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\n");
-        pom.append("    <modelVersion>4.0.0</modelVersion>\n\n");
 
-        pom.append("    <parent>\n");
-        pom.append("        <groupId>org.springframework.boot</groupId>\n");
-        pom.append("        <artifactId>spring-boot-starter-parent</artifactId>\n");
-        pom.append("        <version>3.2.0</version>\n");
-        pom.append("        <relativePath/>\n");
-        pom.append("    </parent>\n\n");
+        // Skeleton sections
+        pom.append(PomSection.HEADER.getTemplate());
+        pom.append(PomSection.PARENT.getTemplate());
+        pom.append(PomSection.projectInfo(groupId, artifactId, version, request.getApplicationName()));
+        pom.append(PomSection.properties(javaVersion));
 
-        pom.append("    <groupId>").append(groupId).append("</groupId>\n");
-        pom.append("    <artifactId>").append(artifactId).append("</artifactId>\n");
-        pom.append("    <version>").append(version).append("</version>\n");
-        pom.append("    <name>").append(request.getApplicationName()).append("</name>\n");
-        pom.append("    <description>Generated Spring Boot Application</description>\n\n");
+        // Dependencies
+        pom.append(PomSection.DEPENDENCIES_OPEN.getTemplate());
 
-        pom.append("    <properties>\n");
-        pom.append("        <java.version>").append(javaVersion).append("</java.version>\n");
-        pom.append("    </properties>\n\n");
-
-        pom.append("    <dependencies>\n");
-        pom.append("        <!-- Spring Boot Starter Web -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        pom.append(GROUP_ID_DEPENDENCY);
-        pom.append("            <artifactId>spring-boot-starter-web</artifactId>\n");
-        pom.append(CLOSED_DEPENDENCY_SECTION);
-
-        pom.append("        <!-- Spring Boot Starter Data JPA -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        pom.append(GROUP_ID_DEPENDENCY);
-        pom.append("            <artifactId>spring-boot-starter-data-jpa</artifactId>\n");
-        pom.append(CLOSED_DEPENDENCY_SECTION);
-
-        pom.append("        <!-- Spring Boot Starter Validation -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        pom.append(GROUP_ID_DEPENDENCY);
-        pom.append("            <artifactId>spring-boot-starter-validation</artifactId>\n");
-        pom.append(CLOSED_DEPENDENCY_SECTION);
-
-        pom.append("        <!-- Database Driver -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        String dbDependency = getDatabaseDependency(request.getDatabaseType());
-        pom.append(dbDependency);
-        pom.append(CLOSED_DEPENDENCY_SECTION);
-
-        if (request.getJwtAuthEnabled()) {
-            pom.append("        <!-- Spring Security -->\n");
-            pom.append(OPEN_DEPENDENCY_SECTION);
-            pom.append(GROUP_ID_DEPENDENCY);
-            pom.append("            <artifactId>spring-boot-starter-security</artifactId>\n");
-            pom.append(CLOSED_DEPENDENCY_SECTION);
-
-            pom.append("        <!-- JWT -->\n");
-            pom.append(OPEN_DEPENDENCY_SECTION);
-            pom.append(GROUP_ID_JSON_WEB_TOKEN);
-            pom.append("            <artifactId>jjwt-api</artifactId>\n");
-            pom.append(JWT_VERSION);
-            pom.append(DEPENDENCY);
-            pom.append(OPEN_DEPENDENCY_SECTION);
-            pom.append(GROUP_ID_JSON_WEB_TOKEN);
-            pom.append("            <artifactId>jjwt-impl</artifactId>\n");
-            pom.append(JWT_VERSION);
-            pom.append("            <scope>runtime</scope>\n");
-            pom.append(DEPENDENCY);
-            pom.append(OPEN_DEPENDENCY_SECTION);
-            pom.append(GROUP_ID_JSON_WEB_TOKEN);
-            pom.append("            <artifactId>jjwt-jackson</artifactId>\n");
-            pom.append(JWT_VERSION);
-            pom.append("            <scope>runtime</scope>\n");
-            pom.append(CLOSED_DEPENDENCY_SECTION);
+        for (PomDependency dep : PomDependency.values()) {
+            if (dep.isJwtOnly() && !request.getJwtAuthEnabled()) {
+                continue;
+            }
+            if (isDriverDependency(dep)) {
+                continue;
+            }
+            pom.append(dep.toXml());
         }
 
-        pom.append("        <!-- Lombok -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        pom.append("            <groupId>org.projectlombok</groupId>\n");
-        pom.append("            <artifactId>lombok</artifactId>\n");
-        pom.append("            <optional>true</optional>\n");
-        pom.append(CLOSED_DEPENDENCY_SECTION);
+        // Database driver (selected by DatabaseType)
+        pom.append(PomDependency.driverFor(request.getDatabaseType()).toXml());
 
-        pom.append("        <!-- Spring Boot Starter Test -->\n");
-        pom.append(OPEN_DEPENDENCY_SECTION);
-        pom.append(GROUP_ID_DEPENDENCY);
-        pom.append("            <artifactId>spring-boot-starter-test</artifactId>\n");
-        pom.append("            <scope>test</scope>\n");
-        pom.append(DEPENDENCY);
-        pom.append("    </dependencies>\n\n");
+        pom.append(PomSection.DEPENDENCIES_CLOSE.getTemplate());
 
-        pom.append("    <build>\n");
-        pom.append("        <plugins>\n");
-        pom.append("            <plugin>\n");
-        pom.append("                <groupId>org.apache.maven.plugins</groupId>\n");
-        pom.append("                <artifactId>maven-compiler-plugin</artifactId>\n");
-        pom.append("                <configuration>\n");
-        pom.append("                    <annotationProcessorPaths>\n");
-        pom.append("                        <path>\n");
-        pom.append("                            <groupId>org.projectlombok</groupId>\n");
-        pom.append("                            <artifactId>lombok</artifactId>\n");
-        pom.append("                            <version>1.18.42</version>\n");
-        pom.append("                        </path>\n");
-        pom.append("                    </annotationProcessorPaths>\n");
-        pom.append("                </configuration>\n");
-        pom.append("            </plugin>\n");
-        pom.append("            <plugin>\n");
-        pom.append("                <groupId>org.springframework.boot</groupId>\n");
-        pom.append("                <artifactId>spring-boot-maven-plugin</artifactId>\n");
-        pom.append("                <configuration>\n");
-        pom.append("                    <excludes>\n");
-        pom.append("                        <exclude>\n");
-        pom.append("                            <groupId>org.projectlombok</groupId>\n");
-        pom.append("                            <artifactId>lombok</artifactId>\n");
-        pom.append("                        </exclude>\n");
-        pom.append("                    </excludes>\n");
-        pom.append("                </configuration>\n");
-        pom.append("            </plugin>\n");
-        pom.append("        </plugins>\n");
-        pom.append("    </build>\n");
-        pom.append("</project>\n");
+        // Build plugins
+        pom.append(PomSection.buildSection());
+
+        pom.append(PomSection.PROJECT_CLOSE.getTemplate());
 
         String filePath = projectPath + "/pom.xml";
         Files.writeString(Paths.get(filePath), pom.toString());
         generatedFiles.add("pom.xml");
     }
 
-    private String getDatabaseDependency(DatabaseType databaseType) {
-        return switch (databaseType) {
-            case MYSQL -> """
-                            <groupId>com.mysql</groupId>
-                            <artifactId>mysql-connector-j</artifactId>
-                            <scope>runtime</scope>
-                    """;
-            case POSTGRESQL -> """
-                            <groupId>org.postgresql</groupId>
-                            <artifactId>postgresql</artifactId>
-                            <scope>runtime</scope>
-                    """;
-            case SQLSERVER -> """
-                            <groupId>com.microsoft.sqlserver</groupId>
-                            <artifactId>mssql-jdbc</artifactId>
-                            <scope>runtime</scope>
-                    """;
-            case ORACLE -> """
-                            <groupId>com.oracle.database.jdbc</groupId>
-                            <artifactId>ojdbc8</artifactId>
-                            <scope>runtime</scope>
-                    """;
-        };
+    private boolean isDriverDependency(PomDependency dep) {
+        return dep == PomDependency.MYSQL_DRIVER
+                || dep == PomDependency.POSTGRESQL_DRIVER
+                || dep == PomDependency.SQLSERVER_DRIVER
+                || dep == PomDependency.ORACLE_DRIVER;
     }
+
+
 
     private void generateApplicationProperties(String projectPath, GenerateProjectRequest request, List<String> generatedFiles) throws IOException {
         StringBuilder props = new StringBuilder();
