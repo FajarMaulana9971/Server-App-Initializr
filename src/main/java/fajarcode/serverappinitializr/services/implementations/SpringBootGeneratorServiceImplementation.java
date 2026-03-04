@@ -14,6 +14,7 @@ import fajarcode.serverappinitializr.services.interfaces.SpringBootGeneratorServ
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -149,6 +150,8 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
 //        return byteArrayOutputStream.toByteArray();
 //    }
 
+    @Override
+    @Transactional
     public void getProjectZip(String applicationName, OutputStream outputStream) {
 
         GeneratedProject project = generatedProjectRepository
@@ -255,6 +258,9 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
 
         StringBuilder pom = new StringBuilder();
         pom.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        pom.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n");
+        pom.append("         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
+        pom.append("         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\n");
         pom.append("    <modelVersion>4.0.0</modelVersion>\n\n");
 
         pom.append("    <parent>\n");
@@ -344,6 +350,19 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         pom.append("    <build>\n");
         pom.append("        <plugins>\n");
         pom.append("            <plugin>\n");
+        pom.append("                <groupId>org.apache.maven.plugins</groupId>\n");
+        pom.append("                <artifactId>maven-compiler-plugin</artifactId>\n");
+        pom.append("                <configuration>\n");
+        pom.append("                    <annotationProcessorPaths>\n");
+        pom.append("                        <path>\n");
+        pom.append("                            <groupId>org.projectlombok</groupId>\n");
+        pom.append("                            <artifactId>lombok</artifactId>\n");
+        pom.append("                            <version>1.18.42</version>\n");
+        pom.append("                        </path>\n");
+        pom.append("                    </annotationProcessorPaths>\n");
+        pom.append("                </configuration>\n");
+        pom.append("            </plugin>\n");
+        pom.append("            <plugin>\n");
         pom.append("                <groupId>org.springframework.boot</groupId>\n");
         pom.append("                <artifactId>spring-boot-maven-plugin</artifactId>\n");
         pom.append("                <configuration>\n");
@@ -368,23 +387,23 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         return switch (databaseType) {
             case MYSQL -> """
                             <groupId>com.mysql</groupId>
-                                        <artifactId>mysql-connector-j</artifactId>
-                                        <scope>runtime</scope>
+                            <artifactId>mysql-connector-j</artifactId>
+                            <scope>runtime</scope>
                     """;
             case POSTGRESQL -> """
                             <groupId>org.postgresql</groupId>
-                                        <artifactId>postgresql</artifactId>
-                                        <scope>runtime</scope>
+                            <artifactId>postgresql</artifactId>
+                            <scope>runtime</scope>
                     """;
             case SQLSERVER -> """
                             <groupId>com.microsoft.sqlserver</groupId>
-                                        <artifactId>mssql-jdbc</artifactId>
-                                        <scope>runtime</scope>
+                            <artifactId>mssql-jdbc</artifactId>
+                            <scope>runtime</scope>
                     """;
             case ORACLE -> """
                             <groupId>com.oracle.database.jdbc</groupId>
-                                        <artifactId>ojdbc8</artifactId>
-                                        <scope>runtime</scope>
+                            <artifactId>ojdbc8</artifactId>
+                            <scope>runtime</scope>
                     """;
         };
     }
