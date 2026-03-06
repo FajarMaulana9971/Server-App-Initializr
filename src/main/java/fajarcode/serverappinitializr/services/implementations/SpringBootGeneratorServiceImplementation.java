@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -55,35 +56,43 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         if (request.getFrameworkType() != FrameworkType.SPRINGBOOT) {
             throw new BadRequestException("Framework Must Be SpringBoot");
         }
+        if (generatedProjectRepository.getProjectByApplicationName(request.getApplicationName()).isPresent()) {
+            throw new BadRequestException("Project With The Same Name Already Exists");
+        }
 
         String projectName = request.getApplicationName();
         String packageName = request.getPackageName() != null ? request.getPackageName() : projectName.toLowerCase();
         String projectPath = GENERATED_PROJECTS_DIR + DELIMITER_PATH + projectName;
         List<String> generatedFiles = new ArrayList<>();
 
-        createProjectStructure(projectPath, packageName);
+        try {
+            createProjectStructure(projectPath, packageName);
 
-        generatePomXml(projectPath, request, generatedFiles);
-        generateApplicationProperties(projectPath, request, generatedFiles);
-        generateMainClass(projectPath, packageName, projectName, generatedFiles);
+            generatePomXml(projectPath, request, generatedFiles);
+            generateApplicationProperties(projectPath, request, generatedFiles);
+            generateMainClass(projectPath, packageName, projectName, generatedFiles);
 
-        if (request.getBaseEntityEnabled()) {
-            generateBaseEntity(projectPath, packageName, generatedFiles);
+            if (request.getBaseEntityEnabled()) {
+                generateBaseEntity(projectPath, packageName, generatedFiles);
+            }
+
+            if (request.getBaseResponseEnabled()) {
+                generateBaseResponses(projectPath, packageName, generatedFiles);
+            }
+
+            if (request.getJwtAuthEnabled()) {
+                generateJwtComponents(projectPath, packageName, generatedFiles);
+            }
+
+            generateSampleController(projectPath, packageName, request, generatedFiles);
+            generateSampleService(projectPath, packageName, generatedFiles);
+            generateSampleEntity(projectPath, packageName, request, generatedFiles);
+            generateEnums(projectPath, packageName, generatedFiles);
+            generateConfiguration(projectPath, packageName, generatedFiles);
+        } catch (Exception e) {
+            cleanupProjectDirectory(projectPath);
+            throw e;
         }
-
-        if (request.getBaseResponseEnabled()) {
-            generateBaseResponses(projectPath, packageName, generatedFiles);
-        }
-
-        if (request.getJwtAuthEnabled()) {
-            generateJwtComponents(projectPath, packageName, generatedFiles);
-        }
-
-        generateSampleController(projectPath, packageName, request, generatedFiles);
-        generateSampleService(projectPath, packageName, generatedFiles);
-        generateSampleEntity(projectPath, packageName, request, generatedFiles);
-        generateEnums(projectPath, packageName, generatedFiles);
-        generateConfiguration(projectPath, packageName, generatedFiles);
 
         long projectSize = calculateDirectorySize(Paths.get(projectPath));
 
@@ -191,6 +200,25 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
 
         for (String dir : directories) {
             Files.createDirectories(Paths.get(dir));
+        }
+    }
+
+    private void cleanupProjectDirectory(String projectPath) {
+        try {
+            Path dir = Paths.get(projectPath);
+            if (Files.exists(dir)) {
+                Files.walk(dir)
+                        .sorted(Comparator.reverseOrder())
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException ex) {
+                                log.warn("Failed to clean up file: {}", path, ex);
+                            }
+                        });
+            }
+        } catch (IOException ex) {
+            log.warn("Failed to clean up project directory: {}", projectPath, ex);
         }
     }
 
