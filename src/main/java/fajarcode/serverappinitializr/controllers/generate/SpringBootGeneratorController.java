@@ -26,13 +26,6 @@ public class SpringBootGeneratorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
-//    @GetMapping("/download")
-//    public ResponseEntity<ByteArrayResource> downloadProject(@RequestBody String projectName) throws IOException {
-//        byte[] zipData = springBootGeneratorService.getProjectZip(projectName);
-//        ByteArrayResource resource = new ByteArrayResource(zipData);
-//        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + projectName + ".zip").contentType(MediaType.APPLICATION_OCTET_STREAM).contentLength(zipData.length).body(resource);
-//    }
-
     @GetMapping("/download")
     public void download(@RequestParam String applicationName, HttpServletResponse response) throws IOException {
 
