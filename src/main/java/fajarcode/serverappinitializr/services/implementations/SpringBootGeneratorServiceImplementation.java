@@ -131,9 +131,10 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         Path sourcePath = Paths.get(project.getProjectPath());
 
         try (ZipOutputStream zos = new ZipOutputStream(
-                new BufferedOutputStream(outputStream))) {
+                new BufferedOutputStream(outputStream));
+             var fileStream = Files.walk(sourcePath)) {
 
-            Files.walk(sourcePath)
+            fileStream
                     .filter(Files::isRegularFile)
                     .forEach(path -> {
                         try {
@@ -207,15 +208,17 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
         try {
             Path dir = Paths.get(projectPath);
             if (Files.exists(dir)) {
-                Files.walk(dir)
-                        .sorted(Comparator.reverseOrder())
-                        .forEach(path -> {
-                            try {
-                                Files.delete(path);
-                            } catch (IOException ex) {
-                                log.warn("Failed to clean up file: {}", path, ex);
-                            }
-                        });
+                try (var dirStream = Files.walk(dir)) {
+                    dirStream
+                            .sorted(Comparator.reverseOrder())
+                            .forEach(path -> {
+                                try {
+                                    Files.delete(path);
+                                } catch (IOException ex) {
+                                    log.warn("Failed to clean up file: {}", path, ex);
+                                }
+                            });
+                }
             }
         } catch (IOException ex) {
             log.warn("Failed to clean up project directory: {}", projectPath, ex);
