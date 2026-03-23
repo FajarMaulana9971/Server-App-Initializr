@@ -11,18 +11,7 @@ import fajarcode.serverappinitializr.models.enums.FrameworkType;
 import fajarcode.serverappinitializr.repositories.GeneratedProjectRepository;
 import fajarcode.serverappinitializr.services.interfaces.SpringBootGeneratorService;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
-import fajarcode.serverappinitializr.services.generators.modules.ProjectStructureModule;
-import fajarcode.serverappinitializr.services.generators.modules.PomXmlModule;
-import fajarcode.serverappinitializr.services.generators.modules.ApplicationPropertiesModule;
-import fajarcode.serverappinitializr.services.generators.modules.MainClassModule;
-import fajarcode.serverappinitializr.services.generators.modules.BaseEntityModule;
-import fajarcode.serverappinitializr.services.generators.modules.BaseResponsesModule;
-import fajarcode.serverappinitializr.services.generators.modules.JwtModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleControllerModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleServiceModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleEntityModule;
-import fajarcode.serverappinitializr.services.generators.modules.EnumsModule;
-import fajarcode.serverappinitializr.services.generators.modules.WebConfigModule;
+import fajarcode.serverappinitializr.services.generators.orchestrators.FrameworkOrchestratorResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,18 +32,7 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 public class SpringBootGeneratorServiceImplementation implements SpringBootGeneratorService {
     private final GeneratedProjectRepository generatedProjectRepository;
-    private final ProjectStructureModule projectStructureModule;
-    private final PomXmlModule pomXmlModule;
-    private final ApplicationPropertiesModule applicationPropertiesModule;
-    private final MainClassModule mainClassModule;
-    private final BaseEntityModule baseEntityModule;
-    private final BaseResponsesModule baseResponsesModule;
-    private final JwtModule jwtModule;
-    private final SampleControllerModule sampleControllerModule;
-    private final SampleServiceModule sampleServiceModule;
-    private final SampleEntityModule sampleEntityModule;
-    private final EnumsModule enumsModule;
-    private final WebConfigModule webConfigModule;
+    private final FrameworkOrchestratorResolver frameworkOrchestratorResolver;
 
     private static final String GENERATED_PROJECTS_DIR = "generated-projects";
     private static final String DELIMITER_PATH = "/";
@@ -84,24 +62,9 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
             .build();
 
         try {
-            projectStructureModule.generate(context);
-            pomXmlModule.generate(context);
-            applicationPropertiesModule.generate(context);
-            mainClassModule.generate(context);
-            if (request.getBaseEntityEnabled()) {
-                baseEntityModule.generate(context);
-            }
-            if (request.getBaseResponseEnabled()) {
-                baseResponsesModule.generate(context);
-            }
-            if (request.getJwtAuthEnabled()) {
-                jwtModule.generate(context);
-            }
-            sampleControllerModule.generate(context);
-            sampleServiceModule.generate(context);
-            sampleEntityModule.generate(context);
-            enumsModule.generate(context);
-            webConfigModule.generate(context);
+            frameworkOrchestratorResolver
+                .resolve(request.getFrameworkType())
+                .generate(context);
         } catch (Exception e) {
             cleanupProjectDirectory(projectPath);
             throw e;
