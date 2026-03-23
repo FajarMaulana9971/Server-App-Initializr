@@ -1,8 +1,5 @@
-package fajarcode.serverappinitializr.exception;
+package fajarcode.serverappinitializr.exceptions;
 
-import fajarcode.serverappinitializr.exceptions.BadRequestException;
-import fajarcode.serverappinitializr.exceptions.InternalServerErrorException;
-import fajarcode.serverappinitializr.exceptions.NotFoundException;
 import fajarcode.serverappinitializr.models.dto.responses.base.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

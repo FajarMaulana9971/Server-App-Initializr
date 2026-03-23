@@ -7,7 +7,7 @@ import fajarcode.serverappinitializr.models.dto.responses.base.BaseResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public interface SpringBootGeneratorService {
+public interface ProjectGeneratorService {
     BaseResponse<GenerateProjectResponse> generateProject(GenerateProjectRequest request) throws IOException;
 
 //    byte[] getProjectZip(String applicationName) throws IOException;
