@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.orchestrators;
+package fajarcode.serverappinitializr.services.orchestrators;
 
 import fajarcode.serverappinitializr.models.enums.FrameworkType;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;

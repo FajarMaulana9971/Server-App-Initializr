@@ -3,7 +3,7 @@ package fajarcode.serverappinitializr.controllers.generate;
 import fajarcode.serverappinitializr.models.dto.requests.GenerateProjectRequest;
 import fajarcode.serverappinitializr.models.dto.responses.GenerateProjectResponse;
 import fajarcode.serverappinitializr.models.dto.responses.base.BaseResponse;
-import fajarcode.serverappinitializr.services.interfaces.SpringBootGeneratorService;
+import fajarcode.serverappinitializr.services.interfaces.ProjectGeneratorService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequestMapping("spring-boot/generator")
 public class SpringBootGeneratorController {
 
-    private final SpringBootGeneratorService springBootGeneratorService;
+    private final ProjectGeneratorService springBootGeneratorService;
 
     @PostMapping()
     public ResponseEntity<BaseResponse<GenerateProjectResponse>> generateSpringBootProject(@Valid @RequestBody GenerateProjectRequest request) throws IOException {

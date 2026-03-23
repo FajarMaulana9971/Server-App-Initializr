@@ -7,11 +7,10 @@ import fajarcode.serverappinitializr.models.dto.requests.GenerateProjectRequest;
 import fajarcode.serverappinitializr.models.dto.responses.GenerateProjectResponse;
 import fajarcode.serverappinitializr.models.dto.responses.base.BaseResponse;
 import fajarcode.serverappinitializr.models.entities.GeneratedProject;
-import fajarcode.serverappinitializr.models.enums.FrameworkType;
 import fajarcode.serverappinitializr.repositories.GeneratedProjectRepository;
-import fajarcode.serverappinitializr.services.interfaces.SpringBootGeneratorService;
+import fajarcode.serverappinitializr.services.interfaces.ProjectGeneratorService;
+import fajarcode.serverappinitializr.services.orchestrators.FrameworkOrchestratorResolver;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
-import fajarcode.serverappinitializr.services.generators.orchestrators.FrameworkOrchestratorResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SpringBootGeneratorServiceImplementation implements SpringBootGeneratorService {
+public class ProjectGeneratorServiceImpl implements ProjectGeneratorService {
     private final GeneratedProjectRepository generatedProjectRepository;
     private final FrameworkOrchestratorResolver frameworkOrchestratorResolver;
 
@@ -39,9 +38,6 @@ public class SpringBootGeneratorServiceImplementation implements SpringBootGener
 
     @Override
     public BaseResponse<GenerateProjectResponse> generateProject(GenerateProjectRequest request) throws IOException {
-        if (request.getFrameworkType() != FrameworkType.SPRINGBOOT) {
-            throw new BadRequestException("Framework Must Be SpringBoot");
-        }
         if (generatedProjectRepository.getProjectByApplicationName(request.getApplicationName()).isPresent()) {
             throw new BadRequestException("Project With The Same Name Already Exists");
         }

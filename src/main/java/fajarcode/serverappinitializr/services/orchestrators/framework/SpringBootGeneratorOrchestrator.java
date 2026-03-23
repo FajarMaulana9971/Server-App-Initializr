@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.orchestrators.frameworkOrchestrators;
+package fajarcode.serverappinitializr.services.orchestrators.framework;
 
 import fajarcode.serverappinitializr.models.enums.FrameworkType;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
@@ -14,7 +14,7 @@ import fajarcode.serverappinitializr.services.generators.modules.SampleControlle
 import fajarcode.serverappinitializr.services.generators.modules.SampleEntityModule;
 import fajarcode.serverappinitializr.services.generators.modules.SampleServiceModule;
 import fajarcode.serverappinitializr.services.generators.modules.WebConfigModule;
-import fajarcode.serverappinitializr.services.generators.orchestrators.FrameworkGenerationOrchestrator;
+import fajarcode.serverappinitializr.services.orchestrators.FrameworkGenerationOrchestrator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
