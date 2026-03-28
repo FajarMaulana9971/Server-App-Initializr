@@ -33,13 +33,10 @@ public class PomXmlModule implements ProjectGenerationModule {
         pom.append(PomSection.DEPENDENCIES_OPEN.getTemplate());
 
         for (PomDependency dep : PomDependency.values()) {
-            if (dep.isJwtOnly() && !request.getJwtAuthEnabled()) {
-                continue;
+            if ((!dep.isJwtOnly() || Boolean.TRUE.equals(request.getJwtAuthEnabled()))
+                    && !isDriverDependency(dep)) {
+                pom.append(dep.toXml());
             }
-            if (isDriverDependency(dep)) {
-                continue;
-            }
-            pom.append(dep.toXml());
         }
 
         pom.append(PomDependency.driverFor(request.getDatabaseType()).toXml());
