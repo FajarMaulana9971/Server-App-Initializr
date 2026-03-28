@@ -2,18 +2,18 @@ package fajarcode.serverappinitializr.services.orchestrators.framework;
 
 import fajarcode.serverappinitializr.models.enums.FrameworkType;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
-import fajarcode.serverappinitializr.services.generators.modules.ApplicationPropertiesModule;
-import fajarcode.serverappinitializr.services.generators.modules.BaseEntityModule;
-import fajarcode.serverappinitializr.services.generators.modules.BaseResponsesModule;
-import fajarcode.serverappinitializr.services.generators.modules.EnumsModule;
-import fajarcode.serverappinitializr.services.generators.modules.JwtModule;
-import fajarcode.serverappinitializr.services.generators.modules.MainClassModule;
-import fajarcode.serverappinitializr.services.generators.modules.PomXmlModule;
-import fajarcode.serverappinitializr.services.generators.modules.ProjectStructureModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleControllerModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleEntityModule;
-import fajarcode.serverappinitializr.services.generators.modules.SampleServiceModule;
-import fajarcode.serverappinitializr.services.generators.modules.WebConfigModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.ApplicationPropertiesModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.BaseEntityModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.BaseResponsesModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.EnumsModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.JwtModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.MainClassModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.PomXmlModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.ProjectStructureModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.SampleControllerModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.SampleEntityModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.SampleServiceModule;
+import fajarcode.serverappinitializr.services.generators.modules.java.spring.WebConfigModule;
 import fajarcode.serverappinitializr.services.orchestrators.FrameworkGenerationOrchestrator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,15 +42,15 @@ public class SpringBootGeneratorOrchestrator implements FrameworkGenerationOrche
         applicationPropertiesModule.generate(context);
         mainClassModule.generate(context);
 
-        if (context.getRequest().getBaseEntityEnabled()) {
+        if (Boolean.TRUE.equals(context.getRequest().getBaseEntityEnabled())) {
             baseEntityModule.generate(context);
         }
 
-        if (context.getRequest().getBaseResponseEnabled()) {
+        if (Boolean.TRUE.equals(context.getRequest().getBaseResponseEnabled())) {
             baseResponsesModule.generate(context);
         }
 
-        if (context.getRequest().getJwtAuthEnabled()) {
+        if (Boolean.TRUE.equals(context.getRequest().getJwtAuthEnabled())) {
             jwtModule.generate(context);
         }
 

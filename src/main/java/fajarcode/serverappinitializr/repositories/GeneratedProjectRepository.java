@@ -15,7 +15,7 @@ public interface GeneratedProjectRepository extends JpaRepository<GeneratedProje
     @Query(" UPDATE GeneratedProject g " +
             "SET g.downloadCount = g.downloadCount + 1 " +
             "WHERE g.applicationName = :projectName")
-    int incrementDownloadCount(@Param("projectName") String projectName);
+    void incrementDownloadCount(@Param("projectName") String projectName);
 
     Optional<GeneratedProject> getProjectByApplicationName(String applicationName);
 

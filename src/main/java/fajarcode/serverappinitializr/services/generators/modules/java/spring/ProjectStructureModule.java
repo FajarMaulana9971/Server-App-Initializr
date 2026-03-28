@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.modules;
+package fajarcode.serverappinitializr.services.generators.modules.java.spring;
 
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
 import fajarcode.serverappinitializr.services.generators.ProjectGenerationModule;
@@ -21,8 +21,8 @@ public class ProjectStructureModule implements ProjectGenerationModule {
         String[] directories = {
                 projectPath,
                 projectPath + SOURCE_MAIN_JAVA + packagePath,
-                projectPath + SOURCE_MAIN_JAVA + packagePath + "/configuration",
-                projectPath + SOURCE_MAIN_JAVA + packagePath + "/controller",
+                projectPath + SOURCE_MAIN_JAVA + packagePath + "/configurations",
+                projectPath + SOURCE_MAIN_JAVA + packagePath + "/controllers",
                 projectPath + SOURCE_MAIN_JAVA + packagePath + "/models",
                 projectPath + SOURCE_MAIN_JAVA + packagePath + "/models/entities",
                 projectPath + SOURCE_MAIN_JAVA + packagePath + "/models/entities/baseentity",

@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.modules;
+package fajarcode.serverappinitializr.services.generators.modules.java.spring;
 
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
 import fajarcode.serverappinitializr.services.generators.ProjectGenerationModule;
@@ -110,5 +110,14 @@ public class BaseResponsesModule implements ProjectGenerationModule {
         String errorPath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/models/dto/response/baseresponse/ErrorResponse.java";
         Files.writeString(Paths.get(errorPath), errorResponse.toString());
         context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/models/dto/response/baseresponse/ErrorResponse.java");
+
+        StringBuilder sampleRequest = new StringBuilder();
+        sampleRequest.append(PACKAGE).append(packageName).append(".models.dto.request;\n\n");
+        sampleRequest.append("public class SampleRequest {\n\n");
+        sampleRequest.append("}\n");
+
+        String samplePath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/models/dto/request/SampleRequest.java";
+        Files.writeString(Paths.get(samplePath), sampleRequest.toString());
+        context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/models/dto/request/SampleRequest.java");
     }
 }

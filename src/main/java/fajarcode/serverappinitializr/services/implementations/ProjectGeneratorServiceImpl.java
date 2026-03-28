@@ -37,7 +37,7 @@ public class ProjectGeneratorServiceImpl implements ProjectGeneratorService {
     private static final String DELIMITER_PATH = "/";
 
     @Override
-    public BaseResponse<GenerateProjectResponse> generateProject(GenerateProjectRequest request) throws IOException {
+    public BaseResponse<GenerateProjectResponse> generateSpringProject(GenerateProjectRequest request) throws IOException {
         if (generatedProjectRepository.getProjectByApplicationName(request.getApplicationName()).isPresent()) {
             throw new BadRequestException("Project With The Same Name Already Exists");
         }
