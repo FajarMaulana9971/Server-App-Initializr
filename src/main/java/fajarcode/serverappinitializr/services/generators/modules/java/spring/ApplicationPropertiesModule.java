@@ -28,7 +28,7 @@ public class ApplicationPropertiesModule implements ProjectGenerationModule {
         DatabaseType dbType = request.getDatabaseType();
         props.append("spring.datasource.url=").append(dbType.getUrlPrefix()).append("your_database_name\n");
         props.append("spring.datasource.username=your_username\n");
-        props.append("spring.datasource.password=your_password\n");
+        props.append("spring.datasource.password=\n");
         props.append("spring.datasource.driver-class-name=").append(dbType.getDriverClassName()).append("\n\n");
 
         props.append("# JPA Configuration\n");
@@ -46,7 +46,7 @@ public class ApplicationPropertiesModule implements ProjectGenerationModule {
             props.append("spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.OracleDialect\n");
         }
 
-        if (request.getJwtAuthEnabled()) {
+        if (Boolean.TRUE.equals(request.getJwtAuthEnabled())) {
             props.append("\n# JWT Configuration\n");
             props.append("jwt.secret=yourSecretKeyHere123456789012345678901234567890\n");
             props.append("jwt.expiration=86400000\n");
