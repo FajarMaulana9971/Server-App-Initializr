@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.modules;
+package fajarcode.serverappinitializr.services.generators.modules.java.spring;
 
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
 import fajarcode.serverappinitializr.services.generators.ProjectGenerationModule;
@@ -23,7 +23,7 @@ public class WebConfigModule implements ProjectGenerationModule {
         String packagePath = context.getPackagePath();
 
         StringBuilder webConfig = new StringBuilder();
-        webConfig.append(PACKAGE).append(packageName).append(".configuration;\n\n");
+        webConfig.append(PACKAGE).append(packageName).append(".configurations;\n\n");
         webConfig.append("import org.springframework.context.annotation.Configuration;\n");
         webConfig.append("import org.springframework.web.servlet.config.annotation.CorsRegistry;\n");
         webConfig.append("import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;\n\n");
@@ -38,8 +38,8 @@ public class WebConfigModule implements ProjectGenerationModule {
         webConfig.append(BLOCK_CLOSE);
         webConfig.append("}\n");
 
-        String webConfigPath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/configuration/WebConfig.java";
+        String webConfigPath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/configurations/WebConfig.java";
         Files.writeString(Paths.get(webConfigPath), webConfig.toString());
-        context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/configuration/WebConfig.java");
+        context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/configurations/WebConfig.java");
     }
 }

@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.modules;
+package fajarcode.serverappinitializr.services.generators.modules.java.spring;
 
 import fajarcode.serverappinitializr.models.dto.requests.GenerateProjectRequest;
 import fajarcode.serverappinitializr.models.enums.DatabaseType;

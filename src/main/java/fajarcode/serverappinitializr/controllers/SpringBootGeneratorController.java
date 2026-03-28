@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.controllers.generate;
+package fajarcode.serverappinitializr.controllers;
 
 import fajarcode.serverappinitializr.models.dto.requests.GenerateProjectRequest;
 import fajarcode.serverappinitializr.models.dto.responses.GenerateProjectResponse;
@@ -22,7 +22,7 @@ public class SpringBootGeneratorController {
 
     @PostMapping()
     public ResponseEntity<BaseResponse<GenerateProjectResponse>> generateSpringBootProject(@Valid @RequestBody GenerateProjectRequest request) throws IOException {
-        BaseResponse<GenerateProjectResponse> responseBody = springBootGeneratorService.generateProject(request);
+        BaseResponse<GenerateProjectResponse> responseBody = springBootGeneratorService.generateSpringProject(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 

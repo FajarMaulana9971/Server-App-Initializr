@@ -1,4 +1,4 @@
-package fajarcode.serverappinitializr.services.generators.modules;
+package fajarcode.serverappinitializr.services.generators.modules.java.spring;
 
 import fajarcode.serverappinitializr.models.dto.requests.GenerateProjectRequest;
 import fajarcode.serverappinitializr.services.generators.GenerationContext;
@@ -27,7 +27,7 @@ public class SampleControllerModule implements ProjectGenerationModule {
 
         StringBuilder controller = new StringBuilder();
 
-        controller.append(PACKAGE).append(packageName).append(".controller;\n\n");
+        controller.append(PACKAGE).append(packageName).append(".controllers;\n\n");
         controller.append(IMPORT).append(packageName).append(".services.interfaces.SampleService;\n");
         if (request.getBaseResponseEnabled()) {
             controller.append(IMPORT).append(packageName).append(".models.dto.response.baseresponse.SuccessResponse;\n");
@@ -50,8 +50,8 @@ public class SampleControllerModule implements ProjectGenerationModule {
         controller.append(BLOCK_CLOSE);
         controller.append("}\n");
 
-        String filePath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/controller/SampleController.java";
+        String filePath = projectPath + SOURCE_MAIN_JAVA + packagePath + "/controllers/SampleController.java";
         Files.writeString(Paths.get(filePath), controller.toString());
-        context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/controller/SampleController.java");
+        context.getGeneratedFiles().add(ADD_GENERATED_FILES_SOURCE + packagePath + "/controllers/SampleController.java");
     }
 }
